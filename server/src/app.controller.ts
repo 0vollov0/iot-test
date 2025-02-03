@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Render } from '@nestjs/common';
 import { AppService, TemperatureHumidity } from './app.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { ControllLedDto } from './dto/ControllLedDto';
+import { ControlLedDto } from './dto/ControlLedDto';
 
 @Controller()
 export class AppController {
@@ -14,7 +14,7 @@ export class AppController {
   }
 
   @Post('/led')
-  controllLed(@Body() dto: ControllLedDto) {
+  controlLed(@Body() dto: ControlLedDto) {
     return this.appService.publishMessage('led', dto.flag ? 1 : 0);
   }
 
@@ -24,9 +24,7 @@ export class AppController {
   }
 
   @MessagePattern('TemperatureHumidity')
-  handleIncomingMessage(@Payload() data: string) {
-    const dto = JSON.parse(data) as Omit<TemperatureHumidity, 'createdAt'>;
-    this.appService.publishTemperatureHumidity(dto);
-    return `Received: ${JSON.stringify(data)}`;
+  handleIncomingMessage(@Payload() data: Omit<TemperatureHumidity, 'createdAt'>) {
+    this.appService.publishTemperatureHumidity(data);
   }
 }
