@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    .led-panel {
+      display: flex;
+      flex-direction: row;
+      gap: 0px 10px;
+    }
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: center;
+    }
+    th {
+        background-color: #f4f4f4;
+    }
+  </style>
+  <title>Document</title>
+</head>
+<body>
+  <div>
+    <h3>LED Controller</h3>
+    <div class="led-panel">
+      <div>LED status: </div>
+      <div id="led-status">ON</div>
+      <div>
+        <button id="led-toggle" type="button">toggle</button>
+      </div>
+    </div>
+    <div>
+    </div>
+    <table>
+      <thead>
+          <tr>
+              <th>온도 (°C)</th>
+              <th>습도 (%)</th>
+              <th>생성 시간</th>
+          </tr>
+      </thead>
+      <tbody id="data-list">
+          <!-- 데이터가 여기에 추가됨 -->
+      </tbody>
+  </table>
+  </div>
+</body>
+<script>
+  async function fetchData() {
+    try {
+      const response = await fetch('http://localhost:3000/TemperatureHumidity'); // 서버에서 데이터 가져오기
+      const data = await response.json();
+      const tableBody = document.getElementById('data-list');
+      tableBody.innerHTML = ''; // 기존 데이터 초기화
+      data.forEach(item => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+              <td>${item.tep}</td>
+              <td>${item.hum}</td>
+              <td>${new Date(item.createdAt).toLocaleString()}</td>
+          `;
+          tableBody.appendChild(row);
+      });
+    } catch (error) {
+      console.error('데이터를 불러오는 중 오류 발생:', error);
+    }
+  }
+  setInterval(fetchData, 5000);
+  fetchData();
+
+  async function toggleLED(flag) {
+    const response = await fetch('http://localhost:3000/led', {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({flag}),
+    });
+    return await response.status === 201 ? true: false;
+  }
+
+  document.getElementById('led-toggle').addEventListener('click',async () => {
+    const status = document.getElementById('led-status').innerText;
+    const response = await toggleLED(status === 'ON' ? true: false);
+    if (response) document.getElementById('led-status').innerText = status === 'ON' ? 'OFF': 'ON';
+  })
+</script>
+</html>
