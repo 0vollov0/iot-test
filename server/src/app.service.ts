@@ -20,7 +20,7 @@ export class AppService {
     this.mqttClient = ClientProxyFactory.create({
       transport: Transport.MQTT,
       options: {
-        url: 'mqtt://localhost:1883',
+        url: 'mqtt://test.mosquitto.org',
       },
     });
     this.TH_LOGS = [];
@@ -38,6 +38,7 @@ export class AppService {
   }
 
   publishMessage(topic: string, message: any) {
-    return this.mqttClient.emit(topic, message); // MQTT 메시지 발행
+    this.mqttClient
+    return this.mqttClient.emit(topic, message);
   }
 }

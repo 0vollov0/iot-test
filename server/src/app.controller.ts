@@ -13,17 +13,20 @@ export class AppController {
     return { th_log: this.appService.getTemperatureHumidityLog() };
   }
 
-  @Post('/led')
+  @Post('led')
   controlLed(@Body() dto: ControlLedDto) {
-    return this.appService.publishMessage('led', dto.flag ? 1 : 0);
+    console.log(dto);
+    
+    this.appService.publishMessage('0vollov0/led', dto.flag);
+    return dto.flag;
   }
 
-  @Get('TemperatureHumidity')
+  @Get('dht11')
   getTemperatureHumidityLog() {
     return this.appService.getTemperatureHumidityLog();
   }
 
-  @MessagePattern('TemperatureHumidity')
+  @MessagePattern('0vollov0/dht11')
   handleIncomingMessage(@Payload() data: Omit<TemperatureHumidity, 'createdAt'>) {
     this.appService.publishTemperatureHumidity(data);
   }

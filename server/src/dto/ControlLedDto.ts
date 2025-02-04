@@ -1,7 +1,9 @@
-import { IsBoolean } from 'class-validator';
+import { IsBoolean, IsNumber, Max, Min } from 'class-validator';
 
 export class ControlLedDto {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  @IsBoolean()
+  @IsNumber()
+  @Min(0)
+  @Max(1)
   flag: boolean;
 }

@@ -34,9 +34,10 @@
     <h3>LED Controller</h3>
     <div class="led-panel">
       <div>LED status: </div>
-      <div id="led-status">ON</div>
+      <div id="led-status"></div>
       <div>
-        <button id="led-toggle" type="button">toggle</button>
+        <button id="led-on" type="button">ON</button>
+        <button id="led-off" type="button">OFF</button>
       </div>
     </div>
     <div>
@@ -58,7 +59,7 @@
 <script>
   async function fetchData() {
     try {
-      const response = await fetch('http://localhost:3000/TemperatureHumidity'); // 서버에서 데이터 가져오기
+      const response = await fetch('http://localhost:3000/dht11'); // 서버에서 데이터 가져오기
       const data = await response.json();
       const tableBody = document.getElementById('data-list');
       tableBody.innerHTML = ''; // 기존 데이터 초기화
@@ -79,6 +80,7 @@
   fetchData();
 
   async function toggleLED(flag) {
+    console.log('??')
     const response = await fetch('http://localhost:3000/led', {
       method: 'POST',
       mode: 'cors',
@@ -90,10 +92,13 @@
     return await response.status === 201 ? true: false;
   }
 
-  document.getElementById('led-toggle').addEventListener('click',async () => {
-    const status = document.getElementById('led-status').innerText;
-    const response = await toggleLED(status === 'ON' ? true: false);
-    if (response) document.getElementById('led-status').innerText = status === 'ON' ? 'OFF': 'ON';
+  document.getElementById('led-on').addEventListener('click', async () => {
+    const response = await toggleLED(1);
+    if (response) document.getElementById('led-status').innerText = 'ON';
+  })
+  document.getElementById('led-off').addEventListener('click', async () => {
+    const response = await toggleLED(0);
+    if (response) document.getElementById('led-status').innerText = 'OFF';
   })
 </script>
 </html>

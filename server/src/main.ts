@@ -17,8 +17,7 @@ async function bootstrap() {
   const mqttMicroservice = app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.MQTT,
     options: {
-      url: 'mqtt://test.mosquitto.org',
-      clientId: '940424-client2'
+      url: 'mqtt://test.mosquitto.org'
     },
   });
 
