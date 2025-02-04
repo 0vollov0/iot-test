@@ -6,7 +6,7 @@ import {
 } from '@nestjs/microservices';
 
 export type TemperatureHumidity = {
-  tep: number;
+  tmp: number;
   hum: number;
   createdAt: Date;
 };

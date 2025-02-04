@@ -15,8 +15,6 @@ export class AppController {
 
   @Post('led')
   controlLed(@Body() dto: ControlLedDto) {
-    console.log(dto);
-    
     this.appService.publishMessage('0vollov0/led', dto.flag);
     return dto.flag;
   }
